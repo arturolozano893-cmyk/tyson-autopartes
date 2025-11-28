@@ -77,10 +77,13 @@
       <p>Encuentra la pieza que necesitas</p>
     </div>
 
-    <!-- Piezas destacadas (CSV) -->
-    <section id="destacados" class="grid"></section>
+    <!-- Catálogo CSV -->
+    <section>
+      <h2 style="text-align:center; margin-top:20px;">Catálogo interno</h2>
+      <div id="destacados" class="grid"></div>
+    </section>
 
-    <!-- Catálogo Mercado Libre -->
+    <!-- Catálogo Mercado Libre (debajo del CSV) -->
     <section>
       <h2 style="text-align:center; margin-top:20px;">Catálogo sincronizado con Mercado Libre</h2>
       <div id="ml-catalogo"></div>
@@ -88,7 +91,8 @@
 
     <!-- Bloque de confianza -->
     <section class="confianza">
-      <!-- ... todo tu bloque de confianza igual que antes ... -->
+      <!-- Aquí siguen tus bloques de garantía, envíos, atención directa y sus modales -->
+      <!-- ... todo tu contenido original intacto ... -->
     </section>
 
     <!-- Contacto lateral -->
@@ -195,7 +199,7 @@
             <h3>${row.titulo}</h3>
             <p class="precio">${precioTxt}</p>
             <span class="estado-disponible">✅ Disponible</span>
-            <a href="https://listado.mercadolibre.com.mx/_CustId_2714166660" target="_blank">🛒 Ver en Mercado Libre</a>
+            <a href="${row.permalink || 'https://listado.mercadolibre.com.mx/_CustId_2714166660'}" target="_blank">🛒 Ver en Mercado Libre</a>
           </div>
         `;
         containerML.appendChild(card);
@@ -207,15 +211,17 @@
       .then(r => r.text())
       .then(raw => {
         const lines = raw.split(/\r?\n/);
-        lines.forEach(line => {
-          const obj = parseLine(line);
-          if (obj && obj.titulo) productos.push(obj);
-        });
-
-        aplicarFiltros();
-
-        // Poblar categorías
-        const select = document.getElementById("
-
-
-
+       // Poblar categorías también con Mercado Libre
+const select = document.getElementById("categoria");
+const set = new Set([
+  ...productos.map(p => normalize(p.categoria)).filter(Boolean),
+  ...mlProductos.map(p => normalize(p.categoria)).filter(Boolean)
+]);
+[...set].sort().forEach(cat => {
+  if (cat) {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    select.appendChild(opt);
+  }
+});
