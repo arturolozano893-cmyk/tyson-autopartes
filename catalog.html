@@ -217,43 +217,47 @@ visibles.forEach(row => {
 });
 
 
-        // Poblar categorías
-        const select = document.getElementById("categoria");
-        const set = new Set(productos.map(p => normalize(p.categoria)).filter(Boolean));
-        [...set].sort().forEach(cat => {
-          const opt = document.createElement("option");
-          opt.value = cat;
-          opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-          select.appendChild(opt);
-        });
+       // Poblar categorías
+const select = document.getElementById("categoria");
+const set = new Set(productos.map(p => normalize(p.categoria)).filter(Boolean));
+[...set].sort().forEach(cat => {
+  const opt = document.createElement("option");
+  opt.value = cat;
+  opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+  select.appendChild(opt);
+});
 
-        // Activar filtros
-        document.getElementById("search").addEventListener("input", aplicarFiltros);
-        document.getElementById("categoria").addEventListener("change", aplicarFiltros);
-      })
-      .catch(err => console.error("Error cargando catalogo.csv:", err));
+// Activar filtros
+document.getElementById("search").addEventListener("input", aplicarFiltros);
+document.getElementById("categoria").addEventListener("change", aplicarFiltros);
+})
+.catch(err => console.error("Error cargando catalogo.csv:", err));
 
-    // Modal para ampliar imágenes
-    document.addEventListener("click", function(e) {
-      if (e.target.tagName === "IMG" && e.target.closest(".product-card")) {
-        const modal = document.getElementById("imgModal");
-        const imgGrande = document.getElementById("imgGrande");
-        modal.style.display = "block";
-        imgGrande.src = e.target.src;
-      }
-    });
+// Modal para ampliar imágenes
+document.addEventListener("click", function(e) {
+  if (e.target.tagName === "IMG" && e.target.closest(".product-card")) {
+    const modal = document.getElementById("imgModal");
+    const imgGrande = document.getElementById("imgGrande");
+    modal.style.display = "block";
+    imgGrande.src = e.target.src;
+  }
+});
 
-    document.querySelector(".close").onclick = function() {
-      document.getElementById("imgModal").style.display = "none";
-    };
+document.querySelector(".close").onclick = function() {
+  document.getElementById("imgModal").style.display = "none";
+};
 
-    document.getElementById("imgModal").onclick = function(e) {
-      if (e.target.id === "imgModal") {
-        document.getElementById("imgModal").style.display = "none";
-      }
-    };
-  </script>
+document.getElementById("imgModal").onclick = function(e) {
+  if (e.target.id === "imgModal") {
+    document.getElementById("imgModal").style.display = "none";
+  }
+};
+</script>
+
+<!-- Contenedor para mostrar publicaciones -->
 <div id="productos"></div>
+
+<!-- Bloque para cargar publicaciones desde tu proxy -->
 <script>
   async function cargarProductos() {
     try {
@@ -263,14 +267,12 @@ visibles.forEach(row => {
       const contenedor = document.getElementById("productos");
       contenedor.innerHTML = "";
 
-      // Validar que la respuesta tenga resultados
       if (!data.results || !Array.isArray(data.results)) {
         contenedor.innerHTML = "<p>No se pudieron cargar los productos.</p>";
         console.error("Respuesta inesperada:", data);
         return;
       }
 
-      // Mostrar productos
       data.results.forEach(item => {
         const card = `
           <div class="producto">
@@ -289,5 +291,6 @@ visibles.forEach(row => {
 
   cargarProductos();
 </script>
+
 </body>
 </html>
