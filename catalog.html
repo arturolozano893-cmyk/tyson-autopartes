@@ -253,5 +253,29 @@ visibles.forEach(row => {
       }
     };
   </script>
+<div id="productos"></div>
+
+<script>
+  async function cargarProductos() {
+    const res = await fetch("https://express-js-on-vercel-one-lilac.vercel.app/api/mercadolibre");
+    const data = await res.json();
+
+    const contenedor = document.getElementById("productos");
+    contenedor.innerHTML = "";
+
+    data.results.forEach(item => {
+      const card = `
+        <div class="producto">
+          <img src="${item.thumbnail}" alt="${item.title}">
+          <h3>${item.title}</h3>
+          <p>Precio: $${item.price}</p>
+        </div>
+      `;
+      contenedor.innerHTML += card;
+    });
+  }
+
+  cargarProductos();
+</script>
 </body>
 </html>
