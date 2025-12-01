@@ -254,25 +254,37 @@ visibles.forEach(row => {
     };
   </script>
 <div id="productos"></div>
-
 <script>
   async function cargarProductos() {
-    const res = await fetch("https://express-js-on-vercel-one-lilac.vercel.app/api/mercadolibre");
-    const data = await res.json();
+    try {
+      const res = await fetch("https://express-js-on-vercel-one-lilac.vercel.app/api/mercadolibre");
+      const data = await res.json();
 
-    const contenedor = document.getElementById("productos");
-    contenedor.innerHTML = "";
+      const contenedor = document.getElementById("productos");
+      contenedor.innerHTML = "";
 
-    data.results.forEach(item => {
-      const card = `
-        <div class="producto">
-          <img src="${item.thumbnail}" alt="${item.title}">
-          <h3>${item.title}</h3>
-          <p>Precio: $${item.price}</p>
-        </div>
-      `;
-      contenedor.innerHTML += card;
-    });
+      // Validar que la respuesta tenga resultados
+      if (!data.results || !Array.isArray(data.results)) {
+        contenedor.innerHTML = "<p>No se pudieron cargar los productos.</p>";
+        console.error("Respuesta inesperada:", data);
+        return;
+      }
+
+      // Mostrar productos
+      data.results.forEach(item => {
+        const card = `
+          <div class="producto">
+            <img src="${item.thumbnail}" alt="${item.title}">
+            <h3>${item.title}</h3>
+            <p>Precio: $${item.price}</p>
+          </div>
+        `;
+        contenedor.innerHTML += card;
+      });
+    } catch (error) {
+      console.error("Error al cargar productos:", error);
+      document.getElementById("productos").innerHTML = "<p>Error de conexión con el servidor.</p>";
+    }
   }
 
   cargarProductos();
