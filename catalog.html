@@ -32,10 +32,10 @@
     </div>
 
     <!-- Piezas destacadas -->
-    <section id="destacados" class="grid"></section>  <script>
+    <section id="destacados" class="grid"></section> <script>
 async function cargarMercadoLibre() {
   try {
-    const res = await fetch("/api/mercadolibre");
+    const res = await fetch("https://express-js-on-vercel-one-lilac.vercel.app/api/mercadolibre");
     const data = await res.json();
 
     const contenedor = document.getElementById("destacados");
@@ -60,6 +60,7 @@ async function cargarMercadoLibre() {
     });
   } catch (error) {
     console.error("Error cargando Mercado Libre:", error);
+    document.getElementById("destacados").innerHTML += "<p>Error al cargar publicaciones.</p>";
   }
 }
 
@@ -327,3 +328,4 @@ document.getElementById("imgModal").onclick = function(e) {
 </body>
 
 </html>
+
