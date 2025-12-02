@@ -1,23 +1,4 @@
-import fetch from "node-fetch";
-
-// 🔄 Función para renovar el access token automáticamente
-async function refreshAccessToken() {
-  const response = await fetch("https://api.mercadolibre.com/oauth/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      grant_type: "refresh_token",
-      client_id: process.env.MELI_CLIENT_ID,
-      client_secret: process.env.MELI_CLIENT_SECRET,
-      refresh_token: process.env.MELI_REFRESH_TOKEN,
-    }),
-  });
-
-  const data = await response.json();
-  return data.access_token;
-}
-
-// 🚀 Endpoint principal
+// 🚀 Endpoint principal para Mercado Libre
 export default async function handler(req, res) {
   const sellerId = "2714166660"; // Tu seller_id fijo
   let accessToken = process.env.MELI_ACCESS_TOKEN;
@@ -31,7 +12,19 @@ export default async function handler(req, res) {
 
     // Si el token expiró, lo renovamos con el refresh_token
     if (response.status === 401 || response.status === 403) {
-      accessToken = await refreshAccessToken();
+      const refreshResponse = await fetch("https://api.mercadolibre.com/oauth/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          grant_type: "refresh_token",
+          client_id: process.env.MELI_CLIENT_ID,
+          client_secret: process.env.MELI_CLIENT_SECRET,
+          refresh_token: process.env.MELI_REFRESH_TOKEN,
+        }),
+      });
+      const refreshData = await refreshResponse.json();
+      accessToken = refreshData.access_token;
+
       response = await fetch(
         `https://api.mercadolibre.com/users/${sellerId}/items/search`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
@@ -57,6 +50,6 @@ export default async function handler(req, res) {
 
     res.status(200).json(detalles);
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor", details: error });
+    res.status(500).json({ error: "Error en el servidor", details: error.message });
   }
 }
