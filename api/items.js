@@ -1,53 +1,74 @@
-// api/items.js
+// /api/items.js
 export default async function handler(req, res) {
   try {
-    // Primero obtenemos la lista de publicaciones
-    const response = await fetch(
-      `https://api.mercadolibre.com/users/me/items/search`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.MELI_ACCESS_TOKEN}`,
-        },
-      }
+    // Paso 1: refrescar el token con MELI_REFRESH_TOKEN
+    const tokenRes = await fetch("https://api.mercadolibre.com/oauth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        client_id: process.env.MELI_CLIENT_ID,
+        client_secret: process.env.MELI_CLIENT_SECRET,
+        refresh_token: process.env.MELI_REFRESH_TOKEN,
+      }),
+    });
+
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) {
+      return res.status(400).json({ message: "Error al refrescar token", details: tokenData });
+    }
+
+    const access_token = tokenData.access_token;
+
+    // Paso 2: obtener publicaciones del usuario
+    const userRes = await fetch("https://api.mercadolibre.com/users/me", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const userData = await userRes.json();
+
+    const itemsRes = await fetch(
+      `https://api.mercadolibre.com/users/${userData.id}/items/search`,
+      { headers: { Authorization: `Bearer ${access_token}` } }
     );
+    const itemsData = await itemsRes.json();
 
-    const data = await response.json();
-
-    // Si no hay resultados, devolvemos mensaje
-    if (!data.results || data.results.length === 0) {
+    if (!itemsData.results || itemsData.results.length === 0) {
       return res.status(200).json({
-        message: "No tienes publicaciones activas en Mercado Libre",
+        message: "No tienes publicaciones en Mercado Libre",
         items: [],
       });
     }
 
-    // Para cada publicación, pedimos detalles (título, precio, imagen)
+    // Paso 3: traer detalles y filtrar solo activos
     const detalles = await Promise.all(
-      data.results.map(async (id) => {
+      itemsData.results.map(async (id) => {
         const itemRes = await fetch(`https://api.mercadolibre.com/items/${id}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.MELI_ACCESS_TOKEN}`,
-          },
+          headers: { Authorization: `Bearer ${access_token}` },
         });
         const itemData = await itemRes.json();
-        return {
-          id: itemData.id,
-          titulo: itemData.title,
-          precio: itemData.price,
-          imagen: itemData.thumbnail,
-          link: itemData.permalink,
-        };
+        if (itemData.status === "active") {
+          return {
+            id: itemData.id,
+            titulo: itemData.title,
+            precio: itemData.price,
+            stock: itemData.available_quantity,
+            imagen: itemData.thumbnail,
+            link: itemData.permalink,
+          };
+        }
+        return null;
       })
     );
 
+    const activos = detalles.filter((i) => i !== null);
+
     res.status(200).json({
-      message: "Tus publicaciones en Mercado Libre",
-      items: detalles,
+      message: activos.length
+        ? "Tus publicaciones activas en Mercado Libre"
+        : "No tienes publicaciones activas en Mercado Libre",
+      items: activos,
     });
   } catch (error) {
-    res.status(500).json({
-      error: "Error al consultar Mercado Libre",
-      details: error.message,
-    });
+    res.status(500).json({ error: "Error al consultar Mercado Libre", details: error.message });
   }
 }
