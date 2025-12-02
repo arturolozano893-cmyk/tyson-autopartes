@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 
-// Función para renovar el access token automáticamente
 async function refreshAccessToken() {
   const response = await fetch("https://api.mercadolibre.com/oauth/token", {
     method: "POST",
@@ -22,13 +21,11 @@ export default async function handler(req, res) {
   let accessToken = process.env.MELI_ACCESS_TOKEN;
 
   try {
-    // Primer intento con el access token actual
     let response = await fetch(
       `https://api.mercadolibre.com/users/${sellerId}/items/search`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
-    // Si el token está vencido, lo renovamos con el refresh_token
     if (response.status === 401 || response.status === 403) {
       accessToken = await refreshAccessToken();
       response = await fetch(
@@ -44,7 +41,6 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Obtener detalles de cada publicación (ejemplo: primeras 10)
     const detalles = await Promise.all(
       data.results.slice(0, 10).map(async (id) => {
         const r = await fetch(`https://api.mercadolibre.com/items/${id}`, {
