@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tyson Autoparts - Inicio</title><link rel="stylesheet" href="styles.css"></head><body><header><h1>Tyson Autoparts</h1><nav><ul><li><a href="index.html">Inicio</a></li><li><a href="catalog.html">Catálogo</a></li><li><a href="contact.html">Contacto</a></li></ul></nav></header>
+<main class="hero"><h2>Bienvenido a Tyson Autoparts</h2><p>Encuentra autopartes de calidad, con atención directa y rápida por WhatsApp.</p><a class="wa-btn" href="https://wa.me/5216141315986" target="_blank">Contáctanos por WhatsApp</a></main>
+</div>
+<!-- 📦 Catálogo dinámico de Mercado Libre -->
+<script>async function cargarCatalogo() {try {const res = await fetch("/api/mercadolibre");const data = await res.json();const contenedor = document.getElementById("catalogo");data.forEach(item => {const producto = item.body;const card = document.createElement("div");card.className = "producto";card.innerHTML = `<img src="${producto.thumbnail}" alt="${producto.title}" /><h3>${producto.title}</h3><p class="precio">$
+${producto.price}</p><p>Disponibles: ${producto.available_quantity}</p><a href="${producto.permalink}" target="_blank" class="btn">Ver en Mercado Libre</a>`;contenedor.appendChild(card);});} catch (error) {console.error("Error cargando catálogo:", error);}}cargarCatalogo();</script>
+<!-- 🚚 Sección de garantías/envíos -->
+<section class="garantias"><h2>Garantías y Envíos</h2><p>Ofrecemos garantía en todas nuestras piezas y envíos rápidos a todo México.</p></section>
+<footer><p>&copy; 2025 Tyson Autoparts | Bryan</p></footer></body></html>
 <section id="catalogo" class="catalogo"></section>
 
 <script>
@@ -29,3 +39,4 @@ async function cargarCatalogo() {
 
 cargarCatalogo();
 </script>
+
