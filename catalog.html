@@ -32,7 +32,39 @@
     </div>
 
     <!-- Piezas destacadas -->
-    <section id="destacados" class="grid"></section>    <!-- Bloque de confianza -->
+    <section id="destacados" class="grid"></section>  <script>
+async function cargarMercadoLibre() {
+  try {
+    const res = await fetch("/api/mercadolibre");
+    const data = await res.json();
+
+    const contenedor = document.getElementById("destacados");
+
+    data.forEach(item => {
+      const producto = item.body;
+
+      const card = document.createElement("div");
+      card.className = "product-card";
+
+      card.innerHTML = `
+        <img src="${producto.thumbnail}" alt="${producto.title}">
+        <div class="product-info">
+          <h3>${producto.title}</h3>
+          <p class="precio">$${producto.price}</p>
+          <span class="estado-disponible">✅ Disponible</span>
+          <a class="wa-btn" href="${producto.permalink}" target="_blank">Ver en Mercado Libre</a>
+        </div>
+      `;
+
+      contenedor.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Error cargando Mercado Libre:", error);
+  }
+}
+
+cargarMercadoLibre();
+</script>  <!-- Bloque de confianza -->
     <section class="confianza">
   <h2>Compra con confianza</h2>
   <div class="confianza-grid">
@@ -293,4 +325,5 @@ document.getElementById("imgModal").onclick = function(e) {
 </script>
 
 </body>
+
 </html>
