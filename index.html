@@ -1,55 +1,31 @@
-// 🚀 Endpoint principal para Mercado Libre
-export default async function handler(req, res) {
-  const sellerId = "2714166660"; // Tu seller_id fijo
-  let accessToken = process.env.MELI_ACCESS_TOKEN;
+<section id="catalogo" class="catalogo"></section>
 
+<script>
+async function cargarCatalogo() {
   try {
-    // Primer intento con el access token actual
-    let response = await fetch(
-      `https://api.mercadolibre.com/users/${sellerId}/items/search`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const res = await fetch("/api/mercadolibre");
+    const data = await res.json();
 
-    // Si el token expiró, lo renovamos con el refresh_token
-    if (response.status === 401 || response.status === 403) {
-      const refreshResponse = await fetch("https://api.mercadolibre.com/oauth/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          grant_type: "refresh_token",
-          client_id: process.env.MELI_CLIENT_ID,
-          client_secret: process.env.MELI_CLIENT_SECRET,
-          refresh_token: process.env.MELI_REFRESH_TOKEN,
-        }),
-      });
-      const refreshData = await refreshResponse.json();
-      accessToken = refreshData.access_token;
+    const contenedor = document.getElementById("catalogo");
 
-      response = await fetch(
-        `https://api.mercadolibre.com/users/${sellerId}/items/search`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-    }
+    data.forEach(producto => {
+      const card = document.createElement("div");
+      card.className = "producto";
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return res.status(response.status).json(errorData);
-    }
+      card.innerHTML = `
+        <img src="${producto.thumbnail}" alt="${producto.title}" />
+        <h3>${producto.title}</h3>
+        <p class="precio">$${producto.price}</p>
+        <p>Disponibles: ${producto.available_quantity}</p>
+        <a href="${producto.permalink}" target="_blank" class="btn">Ver en Mercado Libre</a>
+      `;
 
-    const data = await response.json();
-
-    // Obtener detalles de cada publicación (ejemplo: primeras 10)
-    const detalles = await Promise.all(
-      data.results.slice(0, 10).map(async (id) => {
-        const r = await fetch(`https://api.mercadolibre.com/items/${id}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        return await r.json();
-      })
-    );
-
-    res.status(200).json(detalles);
+      contenedor.appendChild(card);
+    });
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor", details: error.message });
+    console.error("Error cargando catálogo:", error);
   }
 }
+
+cargarCatalogo();
+</script>
