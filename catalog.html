@@ -200,6 +200,26 @@
           const obj = parseLine(line);
           if (obj && obj.titulo) productos.push(obj);
         });
+        // También cargamos productos de Mercado Libre
+fetch("https://tyson-autopartes.vercel.app/api/items")
+  .then(r => r.json())
+  .then(data => {
+    if (!data.items || !Array.isArray(data.items)) return;
+
+    data.items.forEach(item => {
+      productos.push({
+        titulo: item.titulo,
+        descripcion: "Publicado en Mercado Libre",
+        precio: item.precio,
+        estado: "ACTIVA",
+        imagen: item.imagen,
+        categoria: "mercadolibre"
+      });
+    });
+
+    aplicarFiltros(); // refresca la vista con todo junto
+  })
+  .catch(err => console.error("Error cargando productos Mercado Libre:", err));
 
        // Mostrar 10 piezas aleatorias al inicio
 const container = document.getElementById("destacados");
@@ -257,43 +277,11 @@ document.getElementById("imgModal").onclick = function(e) {
 <!-- Contenedor para mostrar publicaciones -->
 <div id="productos"></div>
 
-<!-- Bloque para cargar publicaciones desde tu proxy -->
-<script>
-  async function cargarProductos() {
-    try {
-      const res = await fetch("https://express-js-on-vercel-one-lilac.vercel.app/api/mercadolibre");
-      const data = await res.json();
 
-      const contenedor = document.getElementById("productos");
-      contenedor.innerHTML = "";
-
-      if (!data.results || !Array.isArray(data.results)) {
-        contenedor.innerHTML = "<p>No se pudieron cargar los productos.</p>";
-        console.error("Respuesta inesperada:", data);
-        return;
-      }
-
-      data.results.forEach(item => {
-        const card = `
-          <div class="producto">
-            <img src="${item.thumbnail}" alt="${item.title}">
-            <h3>${item.title}</h3>
-            <p>Precio: $${item.price}</p>
-          </div>
-        `;
-        contenedor.innerHTML += card;
-      });
-    } catch (error) {
-      console.error("Error al cargar productos:", error);
-      document.getElementById("productos").innerHTML = "<p>Error de conexión con el servidor.</p>";
-    }
-  }
-
-  cargarProductos();
-</script>
 
 </body>
 
 </html>
+
 
 
