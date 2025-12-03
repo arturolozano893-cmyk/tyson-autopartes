@@ -575,3 +575,35 @@ body {
   background: #ffe600;
   color: black;
 }
+@media (max-width: 600px) {
+  .ficha-contenido {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .ficha-imagenes,
+  .ficha-info {
+    width: 100%;
+  }
+
+  .ficha-imagenes button.prev,
+  .ficha-imagenes button.next {
+    font-size: 24px;
+    padding: 5px 10px;
+  }
+
+  .ficha-info h2 {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+
+  .ficha-info p {
+    font-size: 16px;
+  }
+
+  .botones-compra a {
+    display: block;
+    margin: 10px 0;
+    text-align: center;
+  }
+}
