@@ -494,3 +494,47 @@ body {
   position: relative;
   z-index: 1; /* asegura que el texto quede encima del overlay */
 }
+.carrusel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carrusel-imagen {
+  max-width: 80%;
+  max-height: 80vh;
+  border-radius: 8px;
+}
+
+.prev, .next {
+  cursor: pointer;
+  font-size: 2em;
+  background: none;
+  border: none;
+  color: white;
+  padding: 10px;
+}
+
+.miniaturas {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.miniatura {
+  width: 60px;
+  height: 60px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.miniatura.difuminado {
+  opacity: 0.4;
+}
+
+.miniatura.activo {
+  opacity: 1;
+  border: 2px solid #ffe600;
+}
