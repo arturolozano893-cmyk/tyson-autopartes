@@ -336,40 +336,45 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   }
 
   function abrirFicha(row) {
-    imagenesCarrusel = Array.isArray(row.imagenes) ? row.imagenes : (row.imagen ? [row.imagen] : []);
-    indiceActual = 0;
+  imagenesCarrusel = Array.isArray(row.imagenes)
+    ? row.imagenes
+    : (row.imagen ? [row.imagen] : []);
 
-    document.getElementById("fichaTitulo").textContent = row.titulo;
-    document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim() ? row.descripcion : "Sin descripción disponible.";
-    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
+  indiceActual = 0;
 
-    document.getElementById("btnWhatsapp").href =
-      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
+  document.getElementById("fichaTitulo").textContent = row.titulo;
+  document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim()
+    ? row.descripcion
+    : "Sin descripción disponible.";
+  document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
 
-    if (row.link) {
-      document.getElementById("btnMercadoLibre").style.display = "inline-block";
-      document.getElementById("btnMercadoLibre").href = row.link;
-    } else {
-      document.getElementById("btnMercadoLibre").style.display = "none";
-    }
+  document.getElementById("btnWhatsapp").href =
+    `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
 
-    document.getElementById("fichaModal").style.display = "block";
-    mostrarImagenFicha();
+  if (row.link) {
+    document.getElementById("btnMercadoLibre").style.display = "inline-block";
+    document.getElementById("btnMercadoLibre").href = row.link;
+  } else {
+    document.getElementById("btnMercadoLibre").style.display = "none";
   }
+
+  document.getElementById("fichaModal").style.display = "block";
+  mostrarImagenFicha(); // 👈 esta función usa imagenesCarrusel
+}
 
   function cerrarFicha() {
     document.getElementById("fichaModal").style.display = "none";
   }
 
   function mostrarImagenFicha() {
-    const img = document.getElementById("fichaImagen");
-    img.src = imagenesCarrusel[indiceActual] || "";
+  const img = document.getElementById("fichaImagen");
+  img.src = imagenesCarrusel[indiceActual] || "";
 
-    const miniaturas = document.getElementById("fichaMiniaturas");
-    miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
-      `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
-    ).join("");
-  }
+  const miniaturas = document.getElementById("fichaMiniaturas");
+  miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
+    `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
+  ).join("");
+}
 </script>
 
 <!-- Modal Ficha de Producto -->
@@ -399,3 +404,4 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
