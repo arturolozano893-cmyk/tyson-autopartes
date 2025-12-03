@@ -225,25 +225,17 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
               descripcion: item.descripcion || "",
               precio: item.precio,
               estado: "ACTIVA",
-              imagenes: item.imagenes,
+              imagenes: Array.isArray(item.imagenes) ? item.imagenes : (item.imagen ? [item.imagen] : []),
               categoria: item.categoria || detectarCategoria(item.titulo), // 👈 usamos la función aquí
               link: item.link
             });
           });
 
+          // Cuando ya están todos los productos:
+          poblarCategorias();
           aplicarFiltros();
         })
         .catch(err => console.error("Error cargando productos Mercado Libre:", err));
-
-      // 👉 Y después poblas las categorías
-      const select = document.getElementById("categoria");
-      const set = new Set(productos.map(p => normalize(p.categoria)).filter(Boolean));
-      [...set].sort().forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-        select.appendChild(opt);
-      });
 
       // Activar filtros
       document.getElementById("search").addEventListener("input", aplicarFiltros);
@@ -251,7 +243,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     })
     .catch(err => console.error("Error cargando catalogo.csv:", err));
 
-  // 👇 La función va FUERA del fetch, como global
+  // 👇 Función global para detectar categoría desde el título
   function detectarCategoria(titulo) {
     const t = normalize(titulo);
     if (t.includes("faro")) return "faros";
@@ -261,6 +253,19 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     if (t.includes("defensa")) return "defensas";
     if (t.includes("espejo")) return "espejos";
     return "otros";
+  }
+
+  // 👇 Función para poblar categorías en el <select>
+  function poblarCategorias() {
+    const select = document.getElementById("categoria");
+    select.innerHTML = `<option value="">Todas</option>`;
+    const set = new Set(productos.map(p => normalize(p.categoria)).filter(Boolean));
+    [...set].sort().forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat;
+      opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+      select.appendChild(opt);
+    });
   }
 
   // Modal para ampliar imágenes
@@ -298,7 +303,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   let indiceActual = 0;
 
   function abrirCarrusel(imagenes) {
-    imagenesCarrusel = imagenes;
+    imagenesCarrusel = Array.isArray(imagenes) ? imagenes : [];
     indiceActual = 0;
     document.getElementById("carruselModal").style.display = "block";
     mostrarImagenCarrusel();
@@ -317,7 +322,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
   function mostrarImagenCarrusel() {
     const img = document.getElementById("carruselImagen");
-    img.src = imagenesCarrusel[indiceActual];
+    img.src = imagenesCarrusel[indiceActual] || "";
 
     const miniaturas = document.getElementById("carruselMiniaturas");
     miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
@@ -328,6 +333,42 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   function irAImagen(i) {
     indiceActual = i;
     mostrarImagenCarrusel();
+  }
+
+  function abrirFicha(row) {
+    imagenesCarrusel = Array.isArray(row.imagenes) ? row.imagenes : (row.imagen ? [row.imagen] : []);
+    indiceActual = 0;
+
+    document.getElementById("fichaTitulo").textContent = row.titulo;
+    document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim() ? row.descripcion : "Sin descripción disponible.";
+    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
+
+    document.getElementById("btnWhatsapp").href =
+      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
+
+    if (row.link) {
+      document.getElementById("btnMercadoLibre").style.display = "inline-block";
+      document.getElementById("btnMercadoLibre").href = row.link;
+    } else {
+      document.getElementById("btnMercadoLibre").style.display = "none";
+    }
+
+    document.getElementById("fichaModal").style.display = "block";
+    mostrarImagenFicha();
+  }
+
+  function cerrarFicha() {
+    document.getElementById("fichaModal").style.display = "none";
+  }
+
+  function mostrarImagenFicha() {
+    const img = document.getElementById("fichaImagen");
+    img.src = imagenesCarrusel[indiceActual] || "";
+
+    const miniaturas = document.getElementById("fichaMiniaturas");
+    miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
+      `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
+    ).join("");
   }
 </script>
 
@@ -353,48 +394,8 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   </div>
 </div>
 
-<script>
-  function abrirFicha(row) {
-    imagenesCarrusel = row.imagenes || (row.imagen ? [row.imagen] : []);
-    indiceActual = 0;
-
-    document.getElementById("fichaTitulo").textContent = row.titulo;
-    document.getElementById("fichaDescripcion").textContent = row.descripcion || "";
-    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
-
-    document.getElementById("btnWhatsapp").href =
-      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
-
-    if (row.link) {
-      document.getElementById("btnMercadoLibre").style.display = "inline-block";
-      document.getElementById("btnMercadoLibre").href = row.link;
-    } else {
-      document.getElementById("btnMercadoLibre").style.display = "none";
-    }
-
-    document.getElementById("fichaModal").style.display = "block";
-    mostrarImagenFicha();
-  }
-
-  function cerrarFicha() {
-    document.getElementById("fichaModal").style.display = "none";
-  }
-
-  function mostrarImagenFicha() {
-    const img = document.getElementById("fichaImagen");
-    img.src = imagenesCarrusel[indiceActual];
-
-    const miniaturas = document.getElementById("fichaMiniaturas");
-    miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
-      `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
-    ).join("");
-  }
-</script>
-
 <!-- Contenedor para mostrar publicaciones -->
 <div id="productos"></div>
 
 </body>
 </html>
-
-
