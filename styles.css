@@ -538,3 +538,40 @@ body {
   opacity: 1;
   border: 2px solid #ffe600;
 }
+.ficha-contenido {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.ficha-imagenes {
+  flex: 1;
+  text-align: center;
+}
+
+.ficha-info {
+  flex: 1;
+}
+
+.botones-compra a {
+  display: inline-block;
+  margin: 10px 5px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.wa-btn {
+  background: #25d366;
+  color: white;
+}
+
+.ml-btn {
+  background: #ffe600;
+  color: black;
+}
