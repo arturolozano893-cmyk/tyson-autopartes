@@ -494,22 +494,3 @@ body {
   position: relative;
   z-index: 1; /* asegura que el texto quede encima del overlay */
 }
-/* Modal para imagen ampliada */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  padding-top: 60px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.8);
-}
-
-.modal-content {
-  margin: auto;
-  display: block;
- 
-
