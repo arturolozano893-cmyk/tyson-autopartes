@@ -147,32 +147,32 @@
 
   // Crear tarjeta con todas las imágenes
   function crearCard(row) {
-    const est = (row.estado || "").trim().toUpperCase();
-    if (est === "VENDIDA") return null;
+  const est = (row.estado || "").trim().toUpperCase();
+  if (est === "VENDIDA") return null;
 
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.setAttribute("data-categoria", normalize(row.categoria));
+  const card = document.createElement("div");
+  card.className = "product-card";
+  card.setAttribute("data-categoria", normalize(row.categoria));
 
-    // Mostrar todas las imágenes (array de imagenes o una sola)
-   const imgHtml = row.imagenes && row.imagenes.length > 0
-  ? `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`
-  : (row.imagen ? `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>` : `<div class="placeholder">Sin imagen</div>`);
+  // Mostrar solo la primera imagen y abrir carrusel con todas
+  const imgHtml = row.imagenes && row.imagenes.length > 0
+    ? `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`
+    : (row.imagen ? `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>` : `<div class="placeholder">Sin imagen</div>`);
 
-    const precioTxt = row.precio ? `$${row.precio}` : "—";
+  const precioTxt = row.precio ? `$${row.precio}` : "—";
 
-    card.innerHTML = `
-      ${imgHtml}
-      <div class="product-info">
-        <h3>${row.titulo}</h3>
-        ${row.descripcion ? `<p class="descripcion">${row.descripcion}</p>` : ""}
-        <p class="precio">${precioTxt}</p>
-        <span class="estado-disponible">✅ Disponible</span>
-        <a class="wa-btn" href="https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}" target="_blank">📲 Comprar por WhatsApp</a>
-      </div>
-    `;
-    return card;
-  }
+  card.innerHTML = `
+    ${imgHtml}
+    <div class="product-info">
+      <h3>${row.titulo}</h3>
+      ${row.descripcion ? `<p class="descripcion">${row.descripcion}</p>` : ""}
+      <p class="precio">${precioTxt}</p>
+      <span class="estado-disponible">✅ Disponible</span>
+      <a class="wa-btn" href="https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}" target="_blank">📲 Comprar por WhatsApp</a>
+    </div>
+  `;
+  return card;
+}
 
   function aplicarFiltros() {
     const term = normalize(document.getElementById("search").value);
@@ -330,6 +330,7 @@
 </body>
 
 </html>
+
 
 
 
