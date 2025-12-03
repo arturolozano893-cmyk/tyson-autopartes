@@ -145,26 +145,31 @@
       return { titulo: cols[0], descripcion: cols[1], precio: cols[2], estado: cols[3], imagen: cols[4], categoria: cols[5] };
     }
 
-    function crearCard(row) {
-      const est = (row.estado || "").trim().toUpperCase();
-      if (est === "VENDIDA") return null;
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.setAttribute("data-categoria", normalize(row.categoria));
-      const precioTxt = row.precio ? $${row.precio} : "—";
-      const imgHtml = row.imagen ? <img src="${row.imagen}" alt="${row.titulo}"> : <div class="placeholder">Sin imagen</div>;
-      card.innerHTML = `
-        ${imgHtml}
-        <div class="product-info">
-          <h3>${row.titulo}</h3>
-          ${row.descripcion ? <p class="descripcion">${row.descripcion}</p> : ""}
-          <p class="precio">${precioTxt}</p>
-          <span class="estado-disponible">✅ Disponible</span>
-          <a class="wa-btn" href="https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}" target="_blank">📲 Comprar por WhatsApp</a>
-        </div>
-      `;
-      return card;
-    }
+  function crearCard(row) {
+  const est = (row.estado || "").trim().toUpperCase();
+  if (est === "VENDIDA") return null;
+
+  const card = document.createElement("div");
+  card.className = "product-card";
+  card.setAttribute("data-categoria", normalize(row.categoria));
+
+  const precioTxt = row.precio ? `$${row.precio}` : "—";
+  const imgHtml = row.imagen
+    ? `<img src="${row.imagen}" alt="${row.titulo}">`
+    : `<div class="placeholder">Sin imagen</div>`;
+
+  card.innerHTML = `
+    ${imgHtml}
+    <div class="product-info">
+      <h3>${row.titulo}</h3>
+      ${row.descripcion ? `<p class="descripcion">${row.descripcion}</p>` : ""}
+      <p class="precio">${precioTxt}</p>
+      <span class="estado-disponible">✅ Disponible</span>
+      <a class="wa-btn" href="https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}" target="_blank">📲 Comprar por WhatsApp</a>
+    </div>
+  `;
+  return card;
+}
 
     function aplicarFiltros() {
       const term = normalize(document.getElementById("search").value);
@@ -176,14 +181,14 @@
 
       // Filtrar productos
       let filtrados = productos.filter(row => {
-        const text = normalize(${row.titulo} ${row.descripcion} ${row.categoria});
-        const cat = normalize(row.categoria);
+  const text = normalize(`${row.titulo} ${row.descripcion} ${row.categoria}`);
+  const cat = normalize(row.categoria);
 
-        const matchText = words.length === 0 ? true : words.every(w => text.includes(w));
-        const matchCat = !catFilter || cat === catFilter;
+  const matchText = words.length === 0 ? true : words.every(w => text.includes(w));
+  const matchCat = !catFilter || cat === catFilter;
 
-        return matchText && matchCat && (row.estado || "").toUpperCase() !== "VENDIDA";
-      });
+  return matchText && matchCat && (row.estado || "").toUpperCase() !== "VENDIDA";
+});
 
       // Mostrar todas las piezas filtradas
       filtrados.forEach(row => {
@@ -282,3 +287,4 @@ document.getElementById("imgModal").onclick = function(e) {
 </body>
 
 </html>
+
