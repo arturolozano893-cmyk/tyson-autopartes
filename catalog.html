@@ -155,10 +155,16 @@
   card.setAttribute("data-categoria", normalize(row.categoria));
 
   // Mostrar solo la primera imagen y abrir carrusel con todas
-  const imgHtml = row.imagenes && row.imagenes.length > 0
-    ? `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`
-    : (row.imagen ? `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>` : `<div class="placeholder">Sin imagen</div>`);
-
+let imgHtml = "";
+if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
+  // Mercado Libre con varias imágenes
+  imgHtml = `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`;
+} else if (row.imagen) {
+  // Producto manual con una sola imagen
+  imgHtml = `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>`;
+} else {
+  imgHtml = `<div class="placeholder">Sin imagen</div>`;
+}
   const precioTxt = row.precio ? `$${row.precio}` : "—";
 
   card.innerHTML = `
@@ -273,6 +279,7 @@
       document.getElementById("imgModal").style.display = "none";
     }
   };
+  <script>
     <!-- Modal Carrusel -->
 <div id="carruselModal" class="modal">
   <span class="close" onclick="cerrarCarrusel()">&times;</span>
@@ -330,6 +337,7 @@
 </body>
 
 </html>
+
 
 
 
