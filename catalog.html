@@ -125,7 +125,7 @@
     <img class="modal-content" id="imgGrande">
   </div>
 
-  <script>
+ <script>
   const normalize = s => (s || "")
     .toString()
     .toLowerCase()
@@ -145,40 +145,39 @@
     return { titulo: cols[0], descripcion: cols[1], precio: cols[2], estado: cols[3], imagen: cols[4], categoria: cols[5] };
   }
 
-  // Crear tarjeta con todas las imágenes
+  // Crear tarjeta con imágenes
   function crearCard(row) {
-  const est = (row.estado || "").trim().toUpperCase();
-  if (est === "VENDIDA") return null;
+    const est = (row.estado || "").trim().toUpperCase();
+    if (est === "VENDIDA") return null;
 
-  const card = document.createElement("div");
-  card.className = "product-card";
-  card.setAttribute("data-categoria", normalize(row.categoria));
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.setAttribute("data-categoria", normalize(row.categoria));
 
-  // Mostrar solo la primera imagen y abrir carrusel con todas
-let imgHtml = "";
-if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
-  // Mercado Libre con varias imágenes
-  imgHtml = `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`;
-} else if (row.imagen) {
-  // Producto manual con una sola imagen
-  imgHtml = `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>`;
-} else {
-  imgHtml = `<div class="placeholder">Sin imagen</div>`;
-}
-  const precioTxt = row.precio ? `$${row.precio}` : "—";
+    // Mostrar solo la primera imagen y abrir carrusel con todas
+    let imgHtml = "";
+    if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
+      imgHtml = `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`;
+    } else if (row.imagen) {
+      imgHtml = `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>`;
+    } else {
+      imgHtml = `<div class="placeholder">Sin imagen</div>`;
+    }
 
-  card.innerHTML = `
-    ${imgHtml}
-    <div class="product-info">
-      <h3>${row.titulo}</h3>
-      ${row.descripcion ? `<p class="descripcion">${row.descripcion}</p>` : ""}
-      <p class="precio">${precioTxt}</p>
-      <span class="estado-disponible">✅ Disponible</span>
-      <a class="wa-btn" href="https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}" target="_blank">📲 Comprar por WhatsApp</a>
-    </div>
-  `;
-  return card;
-}
+    const precioTxt = row.precio ? `$${row.precio}` : "—";
+
+    card.innerHTML = `
+      ${imgHtml}
+      <div class="product-info">
+        <h3>${row.titulo}</h3>
+        ${row.descripcion ? `<p class="descripcion">${row.descripcion}</p>` : ""}
+        <p class="precio">${precioTxt}</p>
+        <span class="estado-disponible">✅ Disponible</span>
+        <a class="wa-btn" href="https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}" target="_blank">📲 Comprar por WhatsApp</a>
+      </div>
+    `;
+    return card;
+  }
 
   function aplicarFiltros() {
     const term = normalize(document.getElementById("search").value);
@@ -226,12 +225,12 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
               descripcion: "Publicado en Mercado Libre",
               precio: item.precio,
               estado: "ACTIVA",
-              imagenes: item.imagenes, // ahora es un array
+              imagenes: item.imagenes,
               categoria: "mercadolibre"
             });
           });
 
-          aplicarFiltros(); // refresca la vista con todo junto
+          aplicarFiltros();
         })
         .catch(err => console.error("Error cargando productos Mercado Libre:", err));
 
@@ -239,7 +238,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
       const container = document.getElementById("destacados");
       const disponibles = productos.filter(p => (p.estado || "").toUpperCase() !== "VENDIDA");
       const mezclados = disponibles.sort(() => Math.random() - 0.5);
-      const visibles = mezclados.slice(0, 10); // puedes ajustar el número inicial
+      const visibles = mezclados.slice(0, 10);
 
       visibles.forEach(row => {
         const card = crearCard(row);
@@ -279,8 +278,9 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
       document.getElementById("imgModal").style.display = "none";
     }
   };
-  <script>
-    <!-- Modal Carrusel -->
+</script>
+
+<!-- Modal Carrusel -->
 <div id="carruselModal" class="modal">
   <span class="close" onclick="cerrarCarrusel()">&times;</span>
   <div class="carrusel-container">
@@ -332,13 +332,5 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 <!-- Contenedor para mostrar publicaciones -->
 <div id="productos"></div>
 
-
-
 </body>
-
 </html>
-
-
-
-
-
