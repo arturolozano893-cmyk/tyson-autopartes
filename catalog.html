@@ -203,7 +203,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     });
   }
 
-  // Cargar productos manuales y de Mercado Libre
+   // Cargar productos manuales y de Mercado Libre
   fetch("catalogo.csv")
     .then(r => r.text())
     .then(raw => {
@@ -213,40 +213,29 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
         if (obj && obj.titulo) productos.push(obj);
       });
 
-      // Cargar productos de Mercado Libre desde tu API
+      // 👉 Aquí cargas productos de Mercado Libre
       fetch("https://tyson-autopartes.vercel.app/api/items")
         .then(r => r.json())
         .then(data => {
           if (!data.items || !Array.isArray(data.items)) return;
 
-         data.items.forEach(item => {
-  productos.push({
-    titulo: item.titulo,
-    descripcion: item.descripcion || "", // usa la descripción real
-    precio: item.precio,
-    estado: "ACTIVA",
-    imagenes: item.imagenes,
-    categoria: item.categoria || "mercadolibre", // 👈 aquí usas la categoría real
-    link: item.link
-  });
-});
+          data.items.forEach(item => {
+            productos.push({
+              titulo: item.titulo,
+              descripcion: item.descripcion || "",
+              precio: item.precio,
+              estado: "ACTIVA",
+              imagenes: item.imagenes,
+              categoria: item.categoria || detectarCategoria(item.titulo), // 👈 usamos la función aquí
+              link: item.link
+            });
+          });
 
           aplicarFiltros();
         })
         .catch(err => console.error("Error cargando productos Mercado Libre:", err));
 
-      // Mostrar piezas aleatorias al inicio
-      const container = document.getElementById("destacados");
-      const disponibles = productos.filter(p => (p.estado || "").toUpperCase() !== "VENDIDA");
-      const mezclados = disponibles.sort(() => Math.random() - 0.5);
-      const visibles = mezclados.slice(0, 10);
-
-      visibles.forEach(row => {
-        const card = crearCard(row);
-        if (card) container.appendChild(card);
-      });
-
-      // Poblar categorías
+      // 👉 Y después poblas las categorías
       const select = document.getElementById("categoria");
       const set = new Set(productos.map(p => normalize(p.categoria)).filter(Boolean));
       [...set].sort().forEach(cat => {
@@ -261,6 +250,18 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
       document.getElementById("categoria").addEventListener("change", aplicarFiltros);
     })
     .catch(err => console.error("Error cargando catalogo.csv:", err));
+
+  // 👇 La función va FUERA del fetch, como global
+  function detectarCategoria(titulo) {
+    const t = normalize(titulo);
+    if (t.includes("faro")) return "faros";
+    if (t.includes("calavera")) return "calaveras";
+    if (t.includes("cofre")) return "cofres";
+    if (t.includes("parrilla")) return "parrillas";
+    if (t.includes("defensa")) return "defensas";
+    if (t.includes("espejo")) return "espejos";
+    return "otros";
+  }
 
   // Modal para ampliar imágenes
   function activarModalImagen(imgElement) {
@@ -395,4 +396,5 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
 
