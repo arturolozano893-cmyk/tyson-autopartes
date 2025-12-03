@@ -155,14 +155,14 @@
     card.setAttribute("data-categoria", normalize(row.categoria));
 
     // Mostrar solo la primera imagen y abrir carrusel con todas
-    let imgHtml = "";
-    if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
-      imgHtml = `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`;
-    } else if (row.imagen) {
-      imgHtml = `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>`;
-    } else {
-      imgHtml = `<div class="placeholder">Sin imagen</div>`;
-    }
+   let imgHtml = "";
+if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
+  imgHtml = `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirFicha(${JSON.stringify(row)})'>`;
+} else if (row.imagen) {
+  imgHtml = `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirFicha(${JSON.stringify(row)})'>`;
+} else {
+  imgHtml = `<div class="placeholder">Sin imagen</div>`;
+}
 
     const precioTxt = row.precio ? `$${row.precio}` : "—";
 
@@ -219,16 +219,17 @@
         .then(data => {
           if (!data.items || !Array.isArray(data.items)) return;
 
-          data.items.forEach(item => {
-            productos.push({
-              titulo: item.titulo,
-              descripcion: "Publicado en Mercado Libre",
-              precio: item.precio,
-              estado: "ACTIVA",
-              imagenes: item.imagenes,
-              categoria: "mercadolibre"
-            });
-          });
+         data.items.forEach(item => {
+  productos.push({
+    titulo: item.titulo,
+    descripcion: item.descripcion || "", // usa la descripción real
+    precio: item.precio,
+    estado: "ACTIVA",
+    imagenes: item.imagenes,
+    categoria: item.categoria || "mercadolibre", // 👈 aquí usas la categoría real
+    link: item.link
+  });
+});
 
           aplicarFiltros();
         })
@@ -329,8 +330,69 @@
   }
 </script>
 
+<!-- Modal Ficha de Producto -->
+<div id="fichaModal" class="modal">
+  <span class="close" onclick="cerrarFicha()">&times;</span>
+  <div class="ficha-contenido">
+    <div class="ficha-imagenes">
+      <button class="prev" onclick="cambiarImagen(-1)">&#10094;</button>
+      <img id="fichaImagen" class="carrusel-imagen">
+      <button class="next" onclick="cambiarImagen(1)">&#10095;</button>
+      <div id="fichaMiniaturas" class="miniaturas"></div>
+    </div>
+    <div class="ficha-info">
+      <h2 id="fichaTitulo"></h2>
+      <p id="fichaDescripcion"></p>
+      <p id="fichaPrecio"></p>
+      <div class="botones-compra">
+        <a id="btnWhatsapp" class="wa-btn" target="_blank">📲 Comprar por WhatsApp</a>
+        <a id="btnMercadoLibre" class="ml-btn" target="_blank">🛒 Ver en Mercado Libre</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function abrirFicha(row) {
+    imagenesCarrusel = row.imagenes || (row.imagen ? [row.imagen] : []);
+    indiceActual = 0;
+
+    document.getElementById("fichaTitulo").textContent = row.titulo;
+    document.getElementById("fichaDescripcion").textContent = row.descripcion || "";
+    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
+
+    document.getElementById("btnWhatsapp").href =
+      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
+
+    if (row.link) {
+      document.getElementById("btnMercadoLibre").style.display = "inline-block";
+      document.getElementById("btnMercadoLibre").href = row.link;
+    } else {
+      document.getElementById("btnMercadoLibre").style.display = "none";
+    }
+
+    document.getElementById("fichaModal").style.display = "block";
+    mostrarImagenFicha();
+  }
+
+  function cerrarFicha() {
+    document.getElementById("fichaModal").style.display = "none";
+  }
+
+  function mostrarImagenFicha() {
+    const img = document.getElementById("fichaImagen");
+    img.src = imagenesCarrusel[indiceActual];
+
+    const miniaturas = document.getElementById("fichaMiniaturas");
+    miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
+      `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
+    ).join("");
+  }
+</script>
+
 <!-- Contenedor para mostrar publicaciones -->
 <div id="productos"></div>
 
 </body>
 </html>
+
