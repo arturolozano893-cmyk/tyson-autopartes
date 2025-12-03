@@ -20,28 +20,44 @@ export default async function handler(req, res) {
 
     const access_token = tokenData.access_token;
 
-    // Paso 2: obtener publicaciones del usuario
+    // Paso 2: obtener ID del usuario
     const userRes = await fetch("https://api.mercadolibre.com/users/me", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
     const userData = await userRes.json();
 
-    const itemsRes = await fetch(
-      `https://api.mercadolibre.com/users/${userData.id}/items/search`,
-      { headers: { Authorization: `Bearer ${access_token}` } }
-    );
-    const itemsData = await itemsRes.json();
+    // Paso 3: recorrer todas las páginas de publicaciones
+    let offset = 0;
+    let allResults = [];
+    let seguir = true;
 
-    if (!itemsData.results || itemsData.results.length === 0) {
+    while (seguir) {
+      const itemsRes = await fetch(
+        `https://api.mercadolibre.com/users/${userData.id}/items/search?offset=${offset}&limit=30`,
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      );
+      const itemsData = await itemsRes.json();
+
+      if (itemsData.results && itemsData.results.length > 0) {
+        allResults = allResults.concat(itemsData.results);
+        offset += 30;
+        // Si ya no hay más resultados, paramos
+        if (itemsData.results.length < 30) seguir = false;
+      } else {
+        seguir = false;
+      }
+    }
+
+    if (allResults.length === 0) {
       return res.status(200).json({
         message: "No tienes publicaciones en Mercado Libre",
         items: [],
       });
     }
 
-    // Paso 3: traer detalles y filtrar solo activos
+    // Paso 4: traer detalles y filtrar solo activos
     const detalles = await Promise.all(
-      itemsData.results.map(async (id) => {
+      allResults.map(async (id) => {
         const itemRes = await fetch(`https://api.mercadolibre.com/items/${id}`, {
           headers: { Authorization: `Bearer ${access_token}` },
         });
