@@ -155,9 +155,9 @@
     card.setAttribute("data-categoria", normalize(row.categoria));
 
     // Mostrar todas las imágenes (array de imagenes o una sola)
-    const imgHtml = row.imagenes && row.imagenes.length > 0
-      ? row.imagenes.map(url => `<img src="${url}" alt="${row.titulo}" onclick="activarModalImagen(this)">`).join("")
-      : (row.imagen ? `<img src="${row.imagen}" alt="${row.titulo}" onclick="activarModalImagen(this)">` : `<div class="placeholder">Sin imagen</div>`);
+   const imgHtml = row.imagenes && row.imagenes.length > 0
+  ? `<img src="${row.imagenes[0]}" alt="${row.titulo}" onclick='abrirCarrusel(${JSON.stringify(row.imagenes)})'>`
+  : (row.imagen ? `<img src="${row.imagen}" alt="${row.titulo}" onclick='abrirCarrusel([\"${row.imagen}\"])'>` : `<div class="placeholder">Sin imagen</div>`);
 
     const precioTxt = row.precio ? `$${row.precio}` : "—";
 
@@ -273,6 +273,53 @@
       document.getElementById("imgModal").style.display = "none";
     }
   };
+    <!-- Modal Carrusel -->
+<div id="carruselModal" class="modal">
+  <span class="close" onclick="cerrarCarrusel()">&times;</span>
+  <div class="carrusel-container">
+    <button class="prev" onclick="cambiarImagen(-1)">&#10094;</button>
+    <img id="carruselImagen" class="carrusel-imagen">
+    <button class="next" onclick="cambiarImagen(1)">&#10095;</button>
+  </div>
+  <div id="carruselMiniaturas" class="miniaturas"></div>
+</div>
+
+<script>
+  let imagenesCarrusel = [];
+  let indiceActual = 0;
+
+  function abrirCarrusel(imagenes) {
+    imagenesCarrusel = imagenes;
+    indiceActual = 0;
+    document.getElementById("carruselModal").style.display = "block";
+    mostrarImagenCarrusel();
+  }
+
+  function cerrarCarrusel() {
+    document.getElementById("carruselModal").style.display = "none";
+  }
+
+  function cambiarImagen(direccion) {
+    indiceActual += direccion;
+    if (indiceActual < 0) indiceActual = imagenesCarrusel.length - 1;
+    if (indiceActual >= imagenesCarrusel.length) indiceActual = 0;
+    mostrarImagenCarrusel();
+  }
+
+  function mostrarImagenCarrusel() {
+    const img = document.getElementById("carruselImagen");
+    img.src = imagenesCarrusel[indiceActual];
+
+    const miniaturas = document.getElementById("carruselMiniaturas");
+    miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
+      `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
+    ).join("");
+  }
+
+  function irAImagen(i) {
+    indiceActual = i;
+    mostrarImagenCarrusel();
+  }
 </script>
 
 <!-- Contenedor para mostrar publicaciones -->
@@ -283,5 +330,6 @@
 </body>
 
 </html>
+
 
 
