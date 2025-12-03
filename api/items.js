@@ -41,8 +41,7 @@ export default async function handler(req, res) {
       if (itemsData.results && itemsData.results.length > 0) {
         allResults = allResults.concat(itemsData.results);
         offset += 30;
-        // Si ya no hay más resultados, paramos
-        if (itemsData.results.length < 30) seguir = false;
+        if (itemsData.results.length < 30) seguir = false; // ya no hay más páginas
       } else {
         seguir = false;
       }
@@ -62,13 +61,14 @@ export default async function handler(req, res) {
           headers: { Authorization: `Bearer ${access_token}` },
         });
         const itemData = await itemRes.json();
+
         if (itemData.status === "active") {
           return {
             id: itemData.id,
             titulo: itemData.title,
             precio: itemData.price,
             stock: itemData.available_quantity,
-            imagen: itemData.thumbnail,
+            imagenes: itemData.pictures ? itemData.pictures.map(pic => pic.url) : [itemData.thumbnail],
             link: itemData.permalink,
           };
         }
