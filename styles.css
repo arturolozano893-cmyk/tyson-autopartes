@@ -1,8 +1,10 @@
 /* Fondo general gris claro */
 body {
-  background-color: #f2f2f2; /* gris suave */
-  margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 .vitrina {
@@ -606,3 +608,4 @@ body {
     margin: 10px 0;
     text-align: center;
   }
+
