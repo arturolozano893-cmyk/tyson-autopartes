@@ -68,7 +68,10 @@ export default async function handler(req, res) {
             titulo: itemData.title,
             precio: itemData.price,
             stock: itemData.available_quantity,
-            imagenes: itemData.pictures ? itemData.pictures.map(pic => pic.url) : [itemData.thumbnail],
+            // 🔧 Corrección: forzar HTTPS en todas las imágenes
+            imagenes: itemData.pictures
+              ? itemData.pictures.map(pic => pic.url.replace(/^http:\/\//i, "https://"))
+              : [itemData.thumbnail.replace(/^http:\/\//i, "https://")],
             link: itemData.permalink,
           };
         }
