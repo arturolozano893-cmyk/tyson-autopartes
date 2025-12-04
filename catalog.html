@@ -300,73 +300,8 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   };
 </script>
 
-<!-- Modal Carrusel -->
-<div id="carruselModal" class="modal">
-  <span class="close" onclick="cerrarCarrusel()">&times;</span>
-  <div class="carrusel-container">
-    <button class="prev" onclick="cambiarImagen(-1)">&#10094;</button>
-    <img id="carruselImagen" class="carrusel-imagen">
-    <button class="next" onclick="cambiarImagen(1)">&#10095;</button>
-  </div>
-  <div id="carruselMiniaturas" class="miniaturas"></div>
-</div>
 
-<script>
-  let imagenesCarrusel = [];
-  let indiceActual = 0;
 
-  function abrirFicha(row) {
-    imagenesCarrusel = Array.isArray(row.imagenes)
-      ? row.imagenes
-      : (row.imagen ? [row.imagen] : []);
-    indiceActual = 0;
-
-    document.getElementById("fichaTitulo").textContent = row.titulo;
-    document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim()
-      ? row.descripcion
-      : "Sin descripción disponible.";
-    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
-
-    document.getElementById("btnWhatsapp").href =
-      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
-
-    if (row.link) {
-      document.getElementById("btnMercadoLibre").style.display = "inline-block";
-      document.getElementById("btnMercadoLibre").href = row.link;
-    } else {
-      document.getElementById("btnMercadoLibre").style.display = "none";
-    }
-
-    document.getElementById("fichaModal").style.display = "block";
-    mostrarImagenFicha();
-  }
-
-  function cerrarFicha() {
-    document.getElementById("fichaModal").style.display = "none";
-  }
-
-  function mostrarImagenFicha() {
-    const img = document.getElementById("fichaImagen");
-    img.src = imagenesCarrusel[indiceActual] || "";
-
-    const miniaturas = document.getElementById("fichaMiniaturas");
-    miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
-      `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
-    ).join("");
-  }
-
-  function irAImagen(i) {
-    indiceActual = i;
-    mostrarImagenFicha();
-  }
-
-  function cambiarImagen(direccion) {
-    indiceActual += direccion;
-    if (indiceActual < 0) indiceActual = imagenesCarrusel.length - 1;
-    if (indiceActual >= imagenesCarrusel.length) indiceActual = 0;
-    mostrarImagenFicha();
-  }
-</script>
 
 <!-- Modal Ficha de Producto -->
 <div id="fichaModal" class="modal">
@@ -392,9 +327,74 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 <!-- Contenedor para mostrar publicaciones -->
 <div id="productos"></div>
+<script>
+  // Estado del carrusel
+  let imagenesFicha = [];
+  let indiceFicha = 0;
 
+  // Abrir ficha con datos del producto
+  function abrirFicha(row) {
+    imagenesFicha = Array.isArray(row.imagenes)
+      ? row.imagenes
+      : (row.imagen ? [row.imagen] : []);
+    indiceFicha = 0;
+
+    // Texto
+    document.getElementById("fichaTitulo").textContent = row.titulo;
+    document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim()
+      ? row.descripcion
+      : "Sin descripción disponible.";
+    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
+
+    // Botones
+    document.getElementById("btnWhatsapp").href =
+      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
+
+    if (row.link) {
+      document.getElementById("btnMercadoLibre").style.display = "inline-block";
+      document.getElementById("btnMercadoLibre").href = row.link;
+    } else {
+      document.getElementById("btnMercadoLibre").style.display = "none";
+    }
+
+    // Mostrar modal
+    document.getElementById("fichaModal").style.display = "block";
+    mostrarImagenFicha();
+  }
+
+  // Cerrar ficha
+  function cerrarFicha() {
+    document.getElementById("fichaModal").style.display = "none";
+  }
+
+  // Mostrar imagen actual y miniaturas
+  function mostrarImagenFicha() {
+    const img = document.getElementById("fichaImagen");
+    img.src = imagenesFicha[indiceFicha] || "";
+
+    const miniaturas = document.getElementById("fichaMiniaturas");
+    miniaturas.innerHTML = imagenesFicha.map((url, i) =>
+      `<img src="${url}" class="miniatura ${i === indiceFicha ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
+    ).join("");
+  }
+
+  // Ir a una miniatura específica
+  function irAImagen(i) {
+    indiceFicha = i;
+    mostrarImagenFicha();
+  }
+
+  // Cambiar imagen con flechas
+  function cambiarImagen(direccion) {
+    indiceFicha += direccion;
+    if (indiceFicha < 0) indiceFicha = imagenesFicha.length - 1;
+    if (indiceFicha >= imagenesFicha.length) indiceFicha = 0;
+    mostrarImagenFicha();
+  }
+</script>
 </body>
 </html>
+
 
 
 
