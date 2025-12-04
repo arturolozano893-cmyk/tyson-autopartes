@@ -365,7 +365,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   function cerrarFicha() {
     document.getElementById("fichaModal").style.display = "none";
   }
-
+</script>
   function mostrarImagenFicha() {
   const img = document.getElementById("fichaImagen");
   img.src = imagenesCarrusel[indiceActual] || "";
@@ -375,6 +375,11 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
   ).join("");
 }
+  <script>
+  function irAImagen(i) {
+    indiceActual = i;
+    mostrarImagenFicha();
+  }
 </script>
 
 <!-- Modal Ficha de Producto -->
@@ -404,4 +409,5 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
 
