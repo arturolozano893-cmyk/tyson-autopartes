@@ -302,29 +302,41 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
   let imagenesCarrusel = [];
   let indiceActual = 0;
 
-  function abrirCarrusel(imagenes) {
-    imagenesCarrusel = Array.isArray(imagenes) ? imagenes : [];
+  function abrirFicha(row) {
+    imagenesCarrusel = Array.isArray(row.imagenes)
+      ? row.imagenes
+      : (row.imagen ? [row.imagen] : []);
     indiceActual = 0;
-    document.getElementById("carruselModal").style.display = "block";
-    mostrarImagenCarrusel();
+
+    document.getElementById("fichaTitulo").textContent = row.titulo;
+    document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim()
+      ? row.descripcion
+      : "Sin descripción disponible.";
+    document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
+
+    document.getElementById("btnWhatsapp").href =
+      `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
+
+    if (row.link) {
+      document.getElementById("btnMercadoLibre").style.display = "inline-block";
+      document.getElementById("btnMercadoLibre").href = row.link;
+    } else {
+      document.getElementById("btnMercadoLibre").style.display = "none";
+    }
+
+    document.getElementById("fichaModal").style.display = "block";
+    mostrarImagenFicha();
   }
 
-  function cerrarCarrusel() {
-    document.getElementById("carruselModal").style.display = "none";
+  function cerrarFicha() {
+    document.getElementById("fichaModal").style.display = "none";
   }
 
-  function cambiarImagen(direccion) {
-    indiceActual += direccion;
-    if (indiceActual < 0) indiceActual = imagenesCarrusel.length - 1;
-    if (indiceActual >= imagenesCarrusel.length) indiceActual = 0;
-    mostrarImagenCarrusel();
-  }
-
-  function mostrarImagenCarrusel() {
-    const img = document.getElementById("carruselImagen");
+  function mostrarImagenFicha() {
+    const img = document.getElementById("fichaImagen");
     img.src = imagenesCarrusel[indiceActual] || "";
 
-    const miniaturas = document.getElementById("carruselMiniaturas");
+    const miniaturas = document.getElementById("fichaMiniaturas");
     miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
       `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
     ).join("");
@@ -332,52 +344,13 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
   function irAImagen(i) {
     indiceActual = i;
-    mostrarImagenCarrusel();
+    mostrarImagenFicha();
   }
 
-  function abrirFicha(row) {
-  imagenesCarrusel = Array.isArray(row.imagenes)
-    ? row.imagenes
-    : (row.imagen ? [row.imagen] : []);
-
-  indiceActual = 0;
-
-  document.getElementById("fichaTitulo").textContent = row.titulo;
-  document.getElementById("fichaDescripcion").textContent = row.descripcion?.trim()
-    ? row.descripcion
-    : "Sin descripción disponible.";
-  document.getElementById("fichaPrecio").textContent = row.precio ? `$${row.precio}` : "—";
-
-  document.getElementById("btnWhatsapp").href =
-    `https://wa.me/5216141315986?text=Hola%20quiero%20información%20sobre%20${encodeURIComponent(row.titulo)}`;
-
-  if (row.link) {
-    document.getElementById("btnMercadoLibre").style.display = "inline-block";
-    document.getElementById("btnMercadoLibre").href = row.link;
-  } else {
-    document.getElementById("btnMercadoLibre").style.display = "none";
-  }
-
-  document.getElementById("fichaModal").style.display = "block";
-  mostrarImagenFicha(); // 👈 esta función usa imagenesCarrusel
-}
-
-  function cerrarFicha() {
-    document.getElementById("fichaModal").style.display = "none";
-  }
-</script>
-  function mostrarImagenFicha() {
-  const img = document.getElementById("fichaImagen");
-  img.src = imagenesCarrusel[indiceActual] || "";
-
-  const miniaturas = document.getElementById("fichaMiniaturas");
-  miniaturas.innerHTML = imagenesCarrusel.map((url, i) =>
-    `<img src="${url}" class="miniatura ${i === indiceActual ? "activo" : "difuminado"}" onclick="irAImagen(${i})">`
-  ).join("");
-}
-  <script>
-  function irAImagen(i) {
-    indiceActual = i;
+  function cambiarImagen(direccion) {
+    indiceActual += direccion;
+    if (indiceActual < 0) indiceActual = imagenesCarrusel.length - 1;
+    if (indiceActual >= imagenesCarrusel.length) indiceActual = 0;
     mostrarImagenFicha();
   }
 </script>
@@ -409,5 +382,6 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
 
 
