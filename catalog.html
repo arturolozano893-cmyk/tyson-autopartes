@@ -179,30 +179,30 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     return card;
   }
 
-  function aplicarFiltros() {
-    const term = normalize(document.getElementById("search").value);
-    const catFilter = document.getElementById("categoria").value;
-    const words = term.split(/\s+/).filter(w => w && !stopWords.includes(w));
+ function aplicarFiltros() {
+  const term = normalize(document.getElementById("search").value);
+  const catFilter = normalize(document.getElementById("categoria").value);
+  const words = term.split(/\s+/).filter(w => w && !stopWords.includes(w));
 
-    const container = document.getElementById("destacados");
-    container.innerHTML = "";
+  const container = document.getElementById("destacados");
+  container.innerHTML = "";
 
-    let filtrados = productos.filter(row => {
-      const text = normalize(`${row.titulo} ${row.descripcion} ${row.categoria}`);
-      const cat = normalize(row.categoria);
+  let filtrados = productos.filter(row => {
+    const text = normalize(`${row.titulo} ${row.descripcion} ${row.categoria}`);
+    const cat = normalize(row.categoria);
+    const est = (row.estado || "").trim().toUpperCase();
 
-      const matchText = words.length === 0 ? true : words.every(w => text.includes(w));
-      const matchCat = !catFilter || cat === catFilter;
+    const matchText = words.length === 0 ? true : words.every(w => text.includes(w));
+    const matchCat = !catFilter || cat === catFilter;
 
-      return matchText && matchCat && (row.estado || "").toUpperCase() !== "VENDIDA";
-    });
+    return matchText && matchCat && est !== "VENDIDA";
+  });
 
-    filtrados.forEach(row => {
-      const card = crearCard(row);
-      if (card) container.appendChild(card);
-    });
-  }
-
+  filtrados.forEach(row => {
+    const card = crearCard(row);
+    if (card) container.appendChild(card);
+  });
+}
    // Cargar productos manuales y de Mercado Libre
   fetch("catalogo.csv")
     .then(r => r.text())
@@ -395,6 +395,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
 
 
 
