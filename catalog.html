@@ -193,7 +193,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     const est = (row.estado || "").trim().toUpperCase();
 
     const matchText = words.length === 0 ? true : words.every(w => text.includes(w));
-    const matchCat = !catFilter || cat === catFilter;
+    const matchCat = !catFilter || normalize(cat) === normalize(catFilter);
 
     return matchText && matchCat && est !== "VENDIDA";
   });
@@ -395,6 +395,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
 
 
 
