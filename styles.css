@@ -439,3 +439,123 @@ button, .wa-btn, .fb-btn, .ml-btn {
     text-align: center;
   }
 }
+
+/* ===== Modal de ficha de producto ===== */
+#fichaModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 2000;
+}
+#fichaModal .ficha-contenido {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 900px;
+  width: 95%;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  margin: auto;
+  position: relative;
+}
+
+/* Imágenes y carrusel */
+.ficha-imagenes {
+  flex: 1;
+  text-align: center;
+}
+.carrusel-imagen {
+  max-width: 100%;
+  max-height: 60vh;
+  border-radius: 8px;
+}
+.prev, .next {
+  cursor: pointer;
+  font-size: 1.8rem;
+  background: #1a2a40;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  transition: opacity 0.2s;
+}
+.prev:hover, .next:hover { opacity: 0.85; }
+
+.miniaturas {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.miniatura {
+  width: 54px;
+  height: 54px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+  border: 2px solid transparent;
+  object-fit: cover;
+}
+.miniatura.activo { opacity: 1; border-color: #ffe600; }
+.miniatura.difuminado { opacity: 0.4; }
+
+/* Info del producto */
+.ficha-info {
+  flex: 1;
+}
+.ficha-info h2 {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.ficha-info p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* Botones de compra */
+.botones-compra a {
+  display: inline-block;
+  margin: 10px 6px 0 0;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.wa-btn { background: #25d366; color: #fff; }
+.wa-btn:hover { background: #20b858; }
+.ml-btn { background: #ffe600; color: #000; }
+.ml-btn:hover { background: #e6d200; }
+
+/* Botón cerrar */
+#fichaModal .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  color: #1a2a40;
+  cursor: pointer;
+}
+#fichaModal .close:hover { color: #145c32; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  #fichaModal .ficha-contenido {
+    flex-direction: column;
+    padding: 14px;
+  }
+  .carrusel-imagen { max-height: 40vh; }
+  .prev, .next { font-size: 1.6rem; padding: 4px 8px; }
+  .botones-compra a {
+    width: 100%;
+    margin-right: 0;
+    text-align: center;
+  }
+}
