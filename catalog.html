@@ -244,28 +244,28 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
     .catch(err => console.error("Error cargando catalogo.csv:", err));
 
   // 👇 Función global para detectar categoría desde el título
-  function detectarCategoria(titulo) {
-    const t = normalize(titulo);
-    if (t.includes("faro")) return "faros";
-    if (t.includes("calavera")) return "calaveras";
-    if (t.includes("cofre")) return "cofres";
-    if (t.includes("parrilla")) return "parrillas";
-    if (t.includes("defensa")) return "defensas";
-    if (t.includes("espejo")) return "espejos";
-    if (t.includes("facia")) return "facias";
-    if (t.includes("estereo")) || t.includes("pantalla")) return "estereos";
-    if (t.includes("rin")) return "rines";
-    if (t.includes("puerta")) return "puertas";
-    if (t.includes("defensa")) return "defensas";
-    if (t.includes("control")) return "controles";
-    if (t.includes("modulo")) return "modulos";
-    if (t.includes("vidrio")) return "vidrios";
-    if (t.includes("alternador")) return "alternadores")
-    if (t.includes("marcha")) return "marchas";
-    if (t.includes("compresor")) return "compresores";
-    if (t.includes("computadora")) return "computadoras";
-    if (t.includes("cremallera")) return "cremayeras";
-    return "otros";
+ function detectarCategoria(titulo) {
+  const t = normalize(titulo);
+  if (t.includes("faro")) return "faros";
+  if (t.includes("calavera")) return "calaveras";
+  if (t.includes("cofre")) return "cofres";
+  if (t.includes("parrilla")) return "parrillas";
+  if (t.includes("defensa")) return "defensas";
+  if (t.includes("espejo")) return "espejos";
+  if (t.includes("facia")) return "facias";
+  if (t.includes("estereo") || t.includes("pantalla")) return "estereos";
+  if (t.includes("rin")) return "rines";
+  if (t.includes("puerta")) return "puertas";
+  if (t.includes("control")) return "controles";
+  if (t.includes("modulo")) return "modulos";
+  if (t.includes("vidrio")) return "vidrios";
+  if (t.includes("alternador")) return "alternadores";
+  if (t.includes("marcha")) return "marchas";
+  if (t.includes("compresor")) return "compresores";
+  if (t.includes("computadora")) return "computadoras";
+  if (t.includes("cremallera")) return "cremayeras";
+  return "otros";
+}
   }
 
   // 👇 Función para poblar categorías en el <select>
@@ -395,6 +395,7 @@ if (row.imagenes && Array.isArray(row.imagenes) && row.imagenes.length > 0) {
 
 </body>
 </html>
+
 
 
 
