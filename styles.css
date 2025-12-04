@@ -683,4 +683,82 @@ button, .wa-btn, .fb-btn, .ml-btn {
     margin-right: 0;
     text-align: center;
   }
+/* Modal general */
+#fichaModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 3000;
 }
+
+#fichaModal .ficha-contenido {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 900px;
+  width: 95%;
+  margin: auto;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  position: relative;
+}
+
+/* Imagen principal */
+#fichaModal .ficha-imagenes { flex: 1; text-align: center; }
+#fichaModal .carrusel-imagen { max-width: 100%; max-height: 60vh; border-radius: 8px; }
+
+/* Miniaturas */
+#fichaMiniaturas {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+#fichaMiniaturas .miniatura {
+  width: 54px;
+  height: 54px;
+  border-radius: 4px;
+  cursor: pointer;
+  object-fit: cover;
+  border: 2px solid transparent;
+  transition: opacity 0.3s, border-color 0.3s;
+}
+#fichaMiniaturas .miniatura.activo {
+  opacity: 1;
+  border-color: #ffe600;
+}
+#fichaMiniaturas .miniatura.difuminado {
+  opacity: 0.6;
+}
+
+/* Texto */
+#fichaModal .ficha-info { flex: 1; text-align: left; }
+#fichaModal .ficha-info h2 { margin: 0 0 8px; font-size: 1.3rem; font-weight: 600; }
+#fichaModal .ficha-info p { margin: 8px 0; font-size: 0.95rem; color: #444; }
+
+/* Botones */
+#fichaModal .botones-compra a {
+  display: inline-block;
+  margin: 10px 6px 0 0;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+#fichaModal .wa-btn { background: #25d366; color: #fff; }
+#fichaModal .ml-btn { background: #ffe600; color: #000; }
+
+/* Botón cerrar */
+#fichaModal .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #1a2a40;
+  cursor: pointer;
+}
+
